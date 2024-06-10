@@ -37,3 +37,6 @@ body {
 .margin-x-5{
   margin: 0 5px !important;
 }
+.table-w-80{
+  width: 80% !important;
+}
