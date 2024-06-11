@@ -15,4 +15,11 @@ export interface CreateCourseDto {
     createdBy?: number;
     totalVideos?: number;
   }
+  export interface CourseDto {
+    title?: string;
+    description?: string;
+    imgSrc?: string;
+    createdBy?: number;
+    totalVideos?: number;
+  }
   
