@@ -5,18 +5,18 @@ import { Table } from "flowbite-react";
 import { SidebarAdmin } from "@/component/SideBarAdmin";
 import HeaderAdmin from "@/component/HeaderAdmin";
 import { format } from "date-fns";
-import { Button } from "flowbite-react";
 import { CourseDto } from "@/dto/course.dto";
+import { useRouter } from "next/navigation";
 
 
 export default function Courses() {
   const [courses, setCourses] = useState<CourseDto[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchData() {
       try {
         const res = await axios.get("/api/courses");
-        console.log(res);
         setCourses(res.data);
       } catch (error) {
         console.error("Error fetching courses:", error);
@@ -24,7 +24,9 @@ export default function Courses() {
     }
     fetchData();
   }, []);
-  console.log(courses);
+  const handleEdit = (id: number) => {
+    router.push(`/courses/${id}`);
+  };
   return (
     <div className="h-screen overflow-y-hidden">
       <HeaderAdmin />
@@ -32,9 +34,6 @@ export default function Courses() {
         <div className="flex h-screen overflow-y-auto sticky top-16">
           <SidebarAdmin />
           <div className="overflow-x-auto table-w-80 mx-auto">
-            {/* <div className="flex justify-end mb-10">
-              <Button>Thêm Khóa Học</Button>
-            </div> */}
             <Table>
               <Table.Head>
                 <Table.HeadCell>Tên Khóa Học</Table.HeadCell>
@@ -64,9 +63,8 @@ export default function Courses() {
                     </Table.Cell>
                     <Table.Cell>
                       <a
-                        href={`/courses/edit/${course.id}`}
-                        className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                      >
+                          onClick={() => handleEdit(course.id)}
+                          className="font-medium text-cyan-600 hover:underline dark:text-cyan-500 cursor-pointer"                      >
                         Edit
                       </a>
                     </Table.Cell>

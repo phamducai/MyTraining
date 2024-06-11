@@ -28,7 +28,8 @@ CREATE TABLE [dbo].[Videos] (
   [title] nvarchar(200) COLLATE SQL_Latin1_General_CP1_CI_AS  NOT NULL,
   [url] nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS  NOT NULL,
   [course_id] int  NOT NULL,
-  [created_at] datetime DEFAULT getdate() NULL
+  [created_at] datetime DEFAULT getdate() NULL,
+  [updated_at] datetime DEFAULT getdate() NULL
 )
 GO
 

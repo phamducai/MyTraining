@@ -44,3 +44,35 @@ body {
   background-color:  rgb(255 255 255) !important;
   /* background-color: red; */
 }
+.w-slide {
+  width: 100%; /* Default width for mobile devices */
+}
+
+@media (min-width: 640px) {
+  .w-slide {
+    width: 25%; /* Width for screens 640px and above */
+  }
+}
+.watermark-container {
+  position: relative;
+}
+
+.watermark {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: red;
+  font-size: 24px;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  border-radius: 5px;
+  z-index: 9999;
+  pointer-events: none;
+  display: none; /* Hidden by default */
+}
+
+.watermark-container:hover .watermark {
+  display: block; /* Show on hover */
+}
+

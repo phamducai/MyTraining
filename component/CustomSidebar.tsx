@@ -1,90 +1,91 @@
 "use client";
-import React, { useState } from 'react';
-import { Sidebar } from 'flowbite-react';
-import { videoConfig } from '../data/videoConfig';
-import clsx from 'clsx';
+import React, { useEffect, useState, useRef } from "react";
+import { Sidebar } from "flowbite-react";
+import clsx from "clsx";
+import axios from "axios";
+import { CourseWithVideosDto } from "@/dto/course.dto";
+import { useParams } from "next/navigation";
 
 const CustomSidebar: React.FC = () => {
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null); // Thêm trạng thái để lưu chỉ mục của mục được chọn
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [course, setCourse] = useState<CourseWithVideosDto | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [zoomLevel, setZoomLevel] = useState<number>(1);
+  const [isTabActive, setIsTabActive] = useState<boolean>(true);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const watermarkRef = useRef<HTMLDivElement>(null);
+
+  const { id } = useParams();
 
   const handleItemClick = (videoUrl: string, index: number) => {
     setSelectedVideo(videoUrl);
-    setActiveIndex(index); // Cập nhật trạng thái chỉ mục được chọn
+    setActiveIndex(index);
+    setZoomLevel(1); // Reset zoom level when a new video is selected
   };
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        let courseId = id;
+        setLoading(true);
+        const res = await axios.get(`/api/videos?courseId=${courseId}`);
+        setCourse(res.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [id]);
 
   return (
     <div className="flex h-screen overflow-y-auto sticky top-16">
-        <div className="flex-1 p-4 h-full overflow-y-auto">
+      <div className="flex-1 p-4 h-full overflow-y-auto">
         {selectedVideo && (
-          <div>
-            <video key={selectedVideo} controls width="80%" height="auto" controlsList="nodownload">
+          <div className="flex justify-center mt-16">
+            <video
+              key={selectedVideo}
+              ref={videoRef}
+              controls
+              width={`${80 * zoomLevel}%`}
+              height="auto"
+              controlsList="nodownload"
+              style={{ transform: `scale(${zoomLevel})` }}
+              className="no-fullscreen-button"
+              disablePictureInPicture
+            >
               <source src={selectedVideo} type="video/mp4" />
             </video>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
-            <h1>hello</h1>
+            <div ref={watermarkRef} className="watermark">
+              Your Watermark Text Here
+            </div>
           </div>
         )}
       </div>
-      <Sidebar aria-label="Sidebar with multi-level dropdown example">
+      <Sidebar aria-label="Sidebar with multi-level dropdown example" className="w-slide">
         <Sidebar.Items>
-          <Sidebar.ItemGroup>
-            <Sidebar.Collapse label="Chuong 1" className='font-bold'>
-              {videoConfig.map((video, index) => (
-                <Sidebar.Item
-                  key={index}
-                  onClick={() => handleItemClick(video.url, index)}
-                  className={clsx({ 'bg-red-100 font-bold': activeIndex === index })} // Sử dụng clsx để thêm lớp CSS khi mục được chọn
-                >
-                  {video.title}
-                </Sidebar.Item>
-              ))}
-            </Sidebar.Collapse>
-          </Sidebar.ItemGroup>
-        </Sidebar.Items>
-        <Sidebar.Items>
-          <Sidebar.ItemGroup>
-            <Sidebar.Collapse label="Chuong 2">
-              {videoConfig.map((video, index) => (
-                <Sidebar.Item
-                  key={index}
-                  href="#"
-                  onClick={() => handleItemClick(video.url, index)}
-                  className={clsx({ 'bg-blue-500 text-white': activeIndex === index })} // Sử dụng clsx để thêm lớp CSS khi mục được chọn
-                >
-                  {video.title}
-                </Sidebar.Item>
-              ))}
-            </Sidebar.Collapse>
-          </Sidebar.ItemGroup>
+          {course && (
+            <Sidebar.ItemGroup>
+              <Sidebar.Collapse label={course.title} className="font-bold">
+                {course.Videos?.map((video, videoIndex) => (
+                  <Sidebar.Item
+                    key={videoIndex}
+                    onClick={() => handleItemClick(video.url, videoIndex)}
+                    className={clsx({
+                      "bg-red-100 font-bold": activeIndex === videoIndex,
+                    })}
+                  >
+                    {video.title}
+                  </Sidebar.Item>
+                ))}
+              </Sidebar.Collapse>
+            </Sidebar.ItemGroup>
+          )}
         </Sidebar.Items>
       </Sidebar>
-    
     </div>
   );
 };
