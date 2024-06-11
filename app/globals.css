@@ -40,3 +40,7 @@ body {
 .table-w-80{
   width: 80% !important;
 }
+.bg-custom-header{
+  background-color:  rgb(255 255 255) !important;
+  /* background-color: red; */
+}

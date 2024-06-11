@@ -16,10 +16,12 @@ export interface CreateCourseDto {
     totalVideos?: number;
   }
   export interface CourseDto {
-    title?: string;
-    description?: string;
-    imgSrc?: string;
-    createdBy?: number;
-    totalVideos?: number;
+    id: number;
+    title: string;
+    description: string | null;
+    imgSrc: string | null;
+    created_at: Date | null;
+    updated_at: Date | null;
+    total_videos: number | null;
+    display_order: number | null;
   }
-  

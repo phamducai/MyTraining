@@ -4,21 +4,19 @@ import axios from "axios";
 import { Table } from "flowbite-react";
 import { SidebarAdmin } from "@/component/SideBarAdmin";
 import HeaderAdmin from "@/component/HeaderAdmin";
+import { format } from "date-fns";
+import { Button } from "flowbite-react";
+import { CourseDto } from "@/dto/course.dto";
 
-interface Course {
-  id: number;
-  title: string;
-  description: string | null;
-  imgSrc: string | null;
-}
 
 export default function Courses() {
-  const [courses, setCourses] = useState<Course[]>([]);
+  const [courses, setCourses] = useState<CourseDto[]>([]);
 
   useEffect(() => {
     async function fetchData() {
       try {
         const res = await axios.get("/api/courses");
+        console.log(res);
         setCourses(res.data);
       } catch (error) {
         console.error("Error fetching courses:", error);
@@ -34,18 +32,21 @@ export default function Courses() {
         <div className="flex h-screen overflow-y-auto sticky top-16">
           <SidebarAdmin />
           <div className="overflow-x-auto table-w-80 mx-auto">
+            {/* <div className="flex justify-end mb-10">
+              <Button>Thêm Khóa Học</Button>
+            </div> */}
             <Table>
               <Table.Head>
                 <Table.HeadCell>Tên Khóa Học</Table.HeadCell>
                 <Table.HeadCell>Tổng video</Table.HeadCell>
-                <Table.HeadCell>Người Tạo</Table.HeadCell>
+                <Table.HeadCell>Thứ tự hiện thị</Table.HeadCell>
                 <Table.HeadCell>Ngày Cập Nhật</Table.HeadCell>
                 <Table.HeadCell>
                   <span className="sr-only">Edit</span>
                 </Table.HeadCell>
               </Table.Head>
               <Table.Body className="divide-y">
-              {courses?.map((course) => (
+                {courses?.map((course) => (
                   <Table.Row
                     key={course.id}
                     className="bg-white dark:border-gray-700 dark:bg-gray-800"
@@ -53,9 +54,14 @@ export default function Courses() {
                     <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                       {course.title}
                     </Table.Cell>
-                    <Table.Cell>{course.title}</Table.Cell>
-                    <Table.Cell>{course.imgSrc}</Table.Cell>
-                    <Table.Cell>{course.imgSrc}</Table.Cell>
+                    <Table.Cell>{course.total_videos}</Table.Cell>
+                    <Table.Cell>{course.display_order}</Table.Cell>
+                    <Table.Cell>
+                      {" "}
+                      {course.updated_at
+                        ? format(new Date(course.updated_at), "dd/MM/yyyy")
+                        : ""}
+                    </Table.Cell>
                     <Table.Cell>
                       <a
                         href={`/courses/edit/${course.id}`}

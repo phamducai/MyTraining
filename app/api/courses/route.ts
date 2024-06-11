@@ -3,7 +3,12 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const courses = await prisma.courses.findMany();
+    const courses = await prisma.courses.findMany({
+      orderBy: [
+        { display_order: 'asc' },
+        { updated_at: 'desc' }
+      ]
+    });
     return NextResponse.json(courses);
   } catch (error) {
     console.error('Error fetching courses:', error);
@@ -13,10 +18,21 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const { title, description, imgSrc, createdBy } = await req.json();
+    const { title, description, imgSrc, displayOrder } = await req.json();
+    const data = {
+      title,
+      description,
+      imgSrc:imgSrc,
+      display_order: +displayOrder,
+      created_at: new Date(),
+      updated_at: new Date(),
+      created_by:1001,
+      total_videos:0,
+    }
     const course = await prisma.courses.create({
-      data: { title, description, imgSrc, createdBy },
+      data: data,
     });
+
     return NextResponse.json(course);
   } catch (error) {
     console.error('Error creating course:', error);

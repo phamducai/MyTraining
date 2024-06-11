@@ -9,8 +9,8 @@ import CircularProgress from "./CircularProgress";
 function HeaderAdmin() {
   const [progress, setProgress] = useState<number>(50);
   return (
-    <MegaMenu>
-      <div className="fixed top-0 left-0 right-0 z-50 mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4 md:space-x-8">
+    <MegaMenu className="bg-custom-header">
+      <div className="fixed top-0 left-0 right-0 z-50 mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4 md:space-x-8 bg-custom-header">
         <Navbar.Brand href="/">
           <img alt="" src="/img/logo.png" className="w-full h-auto" />
         </Navbar.Brand>
