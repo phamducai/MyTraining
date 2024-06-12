@@ -1,17 +1,32 @@
-import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from "flowbite-react";
+"use client";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Table } from "flowbite-react";
 import { SidebarAdmin } from "@/component/SideBarAdmin";
 import HeaderAdmin from "@/component/HeaderAdmin";
 import { format } from "date-fns";
-import prisma from "@/utils/prisma";
+import { CourseDto } from "@/dto/course.dto";
+import { useRouter } from "next/navigation";
 
-export default async function Courses() {
-  const courses = await prisma.courses.findMany({
-    orderBy: [
-      { display_order: 'asc' },
-      { updated_at: 'desc' }
-    ]
-  });
 
+export default function Admin() {
+  const [courses, setCourses] = useState<CourseDto[]>([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await axios.get("/api/courses");
+        setCourses(res.data);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    }
+    fetchData();
+  }, []);
+  const handleEdit = (id: number) => {
+    router.push(`/courses/${id}`);
+  };
   return (
     <div className="h-screen overflow-y-hidden">
       <HeaderAdmin />
@@ -30,7 +45,7 @@ export default async function Courses() {
                 </Table.HeadCell>
               </Table.Head>
               <Table.Body className="divide-y">
-                {courses.map((course) => (
+                {courses?.map((course) => (
                   <Table.Row
                     key={course.id}
                     className="bg-white dark:border-gray-700 dark:bg-gray-800"
@@ -41,15 +56,15 @@ export default async function Courses() {
                     <Table.Cell>{course.total_videos}</Table.Cell>
                     <Table.Cell>{course.display_order}</Table.Cell>
                     <Table.Cell>
+                      {" "}
                       {course.updated_at
                         ? format(new Date(course.updated_at), "dd/MM/yyyy")
                         : ""}
                     </Table.Cell>
                     <Table.Cell>
                       <a
-                        href={`/courses/${course.id}`}
-                        className="font-medium text-cyan-600 hover:underline dark:text-cyan-500 cursor-pointer"
-                      >
+                          onClick={() => handleEdit(course.id)}
+                          className="font-medium text-cyan-600 hover:underline dark:text-cyan-500 cursor-pointer"                      >
                         Edit
                       </a>
                     </Table.Cell>
