@@ -45,8 +45,9 @@ model Videos {
   id            Int       @id(map: "PK__Videos__3213E83FBE2DE3B7") @default(autoincrement())
   title         String    @db.NVarChar(200)
   url           String    @db.NVarChar(500)
-  course_id     Int
+  course_id     Int?
   created_at    DateTime? @default(now(), map: "DF__Videos__created___4316F928") @db.DateTime
   display_order Int?
-  Courses       Courses   @relation(fields: [course_id], references: [id], onUpdate: NoAction, map: "FK__Videos__course_i__3F466844")
+  updated_at    DateTime? @db.DateTime
+  Courses       Courses?  @relation(fields: [course_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK__Videos__course_i__3F466844")
 }
