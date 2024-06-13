@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Table } from "flowbite-react";
@@ -8,7 +9,6 @@ import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { ListVideoDto } from "@/dto/course.dto";
 
-
 export default function Courses() {
   const [videos, setVideos] = useState<ListVideoDto[]>([]);
   const router = useRouter();
@@ -16,7 +16,9 @@ export default function Courses() {
   useEffect(() => {
     async function fetchData() {
       try {
+        console.log("Fetching videos...");
         const res = await axios.get("/api/videos");
+        console.log("Videos fetched:", res.data);
         setVideos(res.data);
       } catch (error) {
         console.error("Error fetching courses:", error);
@@ -24,10 +26,13 @@ export default function Courses() {
     }
     fetchData();
   }, []);
+
   const handleEdit = (id: number) => {
     router.push(`/courses/${id}`);
   };
+
   console.log(videos);
+
   return (
     <div className="h-screen overflow-y-hidden">
       <HeaderAdmin />
@@ -46,26 +51,26 @@ export default function Courses() {
                 </Table.HeadCell>
               </Table.Head>
               <Table.Body className="divide-y">
-                {videos?.map((videos) => (
+                {videos?.map((video) => (
                   <Table.Row
-                    key={videos.id}
+                    key={video.id}
                     className="bg-white dark:border-gray-700 dark:bg-gray-800"
                   >
                     <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                      {videos.title}
+                      {video.title}
                     </Table.Cell>
-                    <Table.Cell>{videos.display_order}</Table.Cell>
-                    <Table.Cell>{videos.display_order}</Table.Cell>
+                    <Table.Cell>{video.display_order}</Table.Cell>
+                    <Table.Cell>{video.display_order}</Table.Cell>
                     <Table.Cell>
-                      {" "}
-                      {videos.updated_at
-                        ? format(new Date(videos.updated_at), "dd/MM/yyyy")
+                      {video.updated_at
+                        ? format(new Date(video.updated_at), "dd/MM/yyyy")
                         : ""}
                     </Table.Cell>
                     <Table.Cell>
                       <a
-                          onClick={() => handleEdit(videos.id)}
-                          className="font-medium text-cyan-600 hover:underline dark:text-cyan-500 cursor-pointer"                      >
+                        onClick={() => handleEdit(video.id)}
+                        className="font-medium text-cyan-600 hover:underline dark:text-cyan-500 cursor-pointer"
+                      >
                         Edit
                       </a>
                     </Table.Cell>

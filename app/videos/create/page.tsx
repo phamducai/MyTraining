@@ -6,6 +6,7 @@ import axios from "axios";
 import { Button, Label, TextInput, Textarea, Select } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 type FormValues = {
   title: string;
@@ -23,6 +24,7 @@ const AddVideo: React.FC = () => {
   } = useForm<FormValues>();
   const [message, setMessage] = useState<string | null>(null);
   const [courses, setCourses] = useState<CourseDto[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchData() {
@@ -42,19 +44,16 @@ const AddVideo: React.FC = () => {
     formData.append("course_id", data.course_id);
     formData.append("description", data.description);
     formData.append("display_order", data.display_order.toString());
-    formData.append("videoFile", videoFile);
+    formData.append("file", videoFile);
 
     try {
-      const response = await fetch("/api/videos/upload", {
-        method: "POST",
-        body: formData,
+      await axios.post("/api/videos", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-      const result = await response.json();
-      if (result.success) {
-        setMessage("Video uploaded successfully!");
-      } else {
-        setMessage("Error uploading video.");
-      }
+      router.push("/videos");
+
     } catch (error) {
       console.error("Error uploading video:", error);
       setMessage("Error uploading video.");

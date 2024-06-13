@@ -19,8 +19,9 @@ const CustomSidebar: React.FC = () => {
   useEffect(() => {
     async function fetchData() {
       try {
+        let courseId ="1001"
         setLoading(true); // Set loading state to true before fetching data
-        const res = await axios.get("/api/course"); // Adjust this endpoint as needed
+        const res = await axios.get(`/api/videos?courseId=${courseId}`);
         setCourse(res.data);
         setLoading(false); // Set loading state to false after data is fetched
       } catch (error) {
