@@ -49,5 +49,6 @@ model Videos {
   created_at    DateTime? @default(now(), map: "DF__Videos__created___4316F928") @db.DateTime
   display_order Int?
   updated_at    DateTime? @db.DateTime
+  description   String?
   Courses       Courses?  @relation(fields: [course_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK__Videos__course_i__3F466844")
 }

@@ -15,15 +15,4 @@ export async function GET() {
   }
 }
 
-export async function POST(req: Request) {
-  try {
-    const { title, description, url, courseId } = await req.json();
-    // const video = await prisma.videos.create({
-    //   data: { title, description, url, courseId },
-    // });
-    return NextResponse.json("hello");
-  } catch (error) {
-    console.error('Error creating video:', error);
-    return NextResponse.json({ message: 'Failed to create video' }, { status: 500 });
-  }
-}
+
