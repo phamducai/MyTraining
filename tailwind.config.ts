@@ -19,6 +19,7 @@ const config: Config = {
       },
       width: {
         '35p': '35%', // Add custom width class
+        'h-120':'30rem',
       },
       
     },
