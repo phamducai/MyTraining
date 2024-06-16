@@ -8,7 +8,6 @@ import { format } from "date-fns";
 import { CourseDto } from "@/dto/course.dto";
 import { useRouter } from "next/navigation";
 
-
 export default function Courses() {
   const [courses, setCourses] = useState<CourseDto[]>([]);
   const router = useRouter();
@@ -45,31 +44,40 @@ export default function Courses() {
                 </Table.HeadCell>
               </Table.Head>
               <Table.Body className="divide-y">
-                {courses?.map((course) => (
-                  <Table.Row
-                    key={course.id}
-                    className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                  >
-                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                      {course.title}
-                    </Table.Cell>
-                    <Table.Cell>{course.total_videos}</Table.Cell>
-                    <Table.Cell>{course.display_order}</Table.Cell>
-                    <Table.Cell>
-                      {" "}
-                      {course.updated_at
-                        ? format(new Date(course.updated_at), "dd/MM/yyyy")
-                        : ""}
-                    </Table.Cell>
-                    <Table.Cell>
-                      <a
+                {courses.length > 0 &&
+                  courses?.map((course) => (
+                    <Table.Row
+                      key={course.id}
+                      className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                    >
+                      <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                        {course.title}
+                      </Table.Cell>
+                      <Table.Cell>{course.total_videos}</Table.Cell>
+                      <Table.Cell>{course.display_order}</Table.Cell>
+                      <Table.Cell>
+                        {" "}
+                        {course.updated_at
+                          ? format(new Date(course.updated_at), "dd/MM/yyyy")
+                          : ""}
+                      </Table.Cell>
+                      <Table.Cell>
+                        <a
                           onClick={() => handleEdit(course.id)}
-                          className="font-medium text-cyan-600 hover:underline dark:text-cyan-500 cursor-pointer"                      >
-                        Edit
-                      </a>
+                          className="font-medium text-cyan-600 hover:underline dark:text-cyan-500 cursor-pointer"
+                        >
+                          Edit
+                        </a>
+                      </Table.Cell>
+                    </Table.Row>
+                  ))}
+                {courses.length === 0 && (
+                  <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                    <Table.Cell colSpan={5} className="text-center">
+                      Không có dữ liệu
                     </Table.Cell>
                   </Table.Row>
-                ))}
+                )}
               </Table.Body>
             </Table>
           </div>

@@ -10,14 +10,21 @@ export function SidebarAdmin() {
     <Sidebar aria-label="Default sidebar example">
       <Sidebar.Items>
         <Sidebar.ItemGroup>
-          <Sidebar.Collapse label="Quản Lý Khóa Học" className='font-bold'  onClick={() => router.push("/courses")}>
-            <Sidebar.Item onClick={() => router.push("/courses/create")}>
+          <Sidebar.Collapse label="Quản Lý Khóa Học" className='font-bold' >
+
+          <Sidebar.Item onClick={() => router.push("/courses")} className=" cursor-pointer">
+              Danh Sách Khóa Học
+            </Sidebar.Item>
+            <Sidebar.Item onClick={() => router.push("/courses/create")}  className=" cursor-pointer">
               Thêm Khóa Học
             </Sidebar.Item>
           </Sidebar.Collapse>
 
-          <Sidebar.Collapse label="Quản Lý Video" className='font-bold' onClick={() => router.push("/videos")}> 
-            <Sidebar.Item  onClick={() => router.push("/videos/create")}>
+          <Sidebar.Collapse label="Quản Lý Video" className='font-bold'> 
+          <Sidebar.Item  onClick={() => router.push("/videos")}  className=" cursor-pointer">
+              Danh Sách Video
+            </Sidebar.Item>
+            <Sidebar.Item  onClick={() => router.push("/videos/create")} className=" cursor-pointer">
               Thêm Video
             </Sidebar.Item>
           </Sidebar.Collapse>

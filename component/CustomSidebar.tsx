@@ -5,6 +5,7 @@ import clsx from "clsx";
 import axios from "axios";
 import { CourseWithVideosDto } from "@/dto/course.dto";
 import { useParams } from "next/navigation";
+import { Accordion } from "flowbite-react";
 
 const CustomSidebar: React.FC = () => {
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
@@ -19,7 +20,7 @@ const CustomSidebar: React.FC = () => {
 
   const { id } = useParams();
 
-  const handleItemClick = (videoUrl: string, index: number) => {
+  const handleItemClick = (videoUrl: string | null, index: number | null) => {
     setSelectedVideo(videoUrl);
     setActiveIndex(index);
     setZoomLevel(1); // Reset zoom level when a new video is selected
@@ -43,7 +44,7 @@ const CustomSidebar: React.FC = () => {
 
   return (
     <div className="flex h-screen overflow-y-auto sticky top-16">
-      <div className="flex-1 p-4 h-full overflow-y-auto">
+      <div className="flex-1 sm:p-4 h-full overflow-y-auto">
         {selectedVideo && (
           <div className="flex justify-center mt-16">
             <video
@@ -64,18 +65,45 @@ const CustomSidebar: React.FC = () => {
             </div>
           </div>
         )}
+        {!selectedVideo && (
+          <div className="flex justify-center mt-16 ml-6 mr-6">
+            {course && (
+              <Accordion collapseAll className="w-full">
+                {course.Videos?.map((video) => (
+                  <Accordion.Panel key={video.title}>
+                    <Accordion.Title>   {video.title}</Accordion.Title>
+                    <Accordion.Content>
+                      {video.description}
+                    </Accordion.Content>
+                  </Accordion.Panel>
+                ))}
+              </Accordion>
+            )}
+          </div>
+        )}
       </div>
-      <Sidebar aria-label="Sidebar with multi-level dropdown example" className="w-slide">
+      <Sidebar
+        aria-label="Sidebar with multi-level dropdown example"
+        className="w-slide"
+      >
         <Sidebar.Items>
           {course && (
             <Sidebar.ItemGroup>
-              <Sidebar.Collapse label={course.title} className="font-bold">
+              <Sidebar.Collapse label={course.title} className="font-bold" open >
+                <Sidebar.Item
+                  onClick={() => handleItemClick(null, null)}
+                  className={clsx({
+                    "bg-gray-200 font-bold": activeIndex === null,
+                  })}
+                >
+                  Tổng quan
+                </Sidebar.Item>
                 {course.Videos?.map((video, videoIndex) => (
                   <Sidebar.Item
                     key={videoIndex}
                     onClick={() => handleItemClick(video.url, videoIndex)}
                     className={clsx({
-                      "bg-red-100 font-bold": activeIndex === videoIndex,
+                      "bg-gray-200 font-bold": activeIndex === videoIndex,
                     })}
                   >
                     {video.title}

@@ -76,6 +76,13 @@ export default function Courses() {
                     </Table.Cell>
                   </Table.Row>
                 ))}
+                {videos.length === 0 && (
+                  <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                    <Table.Cell colSpan={5} className="text-center">
+                      Không có dữ liệu
+                    </Table.Cell>
+                  </Table.Row>
+                )}
               </Table.Body>
             </Table>
           </div>

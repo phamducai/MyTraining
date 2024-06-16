@@ -45,7 +45,7 @@ body {
   /* background-color: red; */
 }
 .w-slide {
-  width: 100%; /* Default width for mobile devices */
+  width: 100% ; /* Default width for mobile devices */
 }
 
 @media (min-width: 640px) {
@@ -74,5 +74,8 @@ body {
 
 .watermark-container:hover .watermark {
   display: block; /* Show on hover */
+}
+.mr-6{
+  margin-right: 24px;
 }
 
