@@ -3,54 +3,58 @@ generator client {
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
-
 datasource db {
-  provider = "sqlserver"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
 model Courses {
-  id            Int            @id(map: "PK__Courses__3213E83F9EC1DCBD") @default(autoincrement())
-  title         String         @db.NVarChar(200)
-  description   String?
-  imgSrc        String?        @db.NVarChar(Max)
+  id            Int            @id @default(autoincrement())
+  title         String         @db.VarChar(200)
+  description   String?        @db.VarChar(255)
+  imgSrc        String?        @db.Text
   created_by    Int?
-  created_at    DateTime?      @default(now(), map: "DF__Courses__created__3A81B327") @db.DateTime
-  updated_at    DateTime?      @db.DateTime
-  total_videos  Int?           @default(0, map: "DF__Courses__total_v__3B75D760")
+  created_at    DateTime?      @default(now()) @db.DateTime(0)
+  updated_at    DateTime?      @db.DateTime(0)
+  total_videos  Int?           @default(0)
   display_order Int?
   UsersCourses  UsersCourses[]
   Videos        Videos[]
 }
 
 model Users {
-  id           Int            @id(map: "PK__Users__3213E83F6FF2D64F") @default(autoincrement())
-  name         String         @db.NVarChar(100)
-  email        String         @unique(map: "UQ__Users__AB6E61644B37D91F") @db.NVarChar(100)
-  password     String?        @db.NVarChar(255)
-  role         String?        @db.NVarChar(10)
-  created_at   DateTime?      @default(now(), map: "DF__Users__created_a__36B12243") @db.DateTime
-  update_at    DateTime?      @db.DateTime
+  id           Int            @id @default(autoincrement())
+  name         String         @db.VarChar(100)
+  email        String         @unique(map: "email") @db.VarChar(100)
+  password     String?        @db.VarChar(255)
+  role         String?        @db.VarChar(10)
+  created_at   DateTime?      @default(now()) @db.DateTime(0)
+  update_at    DateTime?      @db.DateTime(0)
   UsersCourses UsersCourses[]
 }
 
 model UsersCourses {
-  id        Int     @id(map: "PK__UsersCou__3213E83FF17F0845") @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   user_id   Int
   course_id Int
-  watched   Int?    @default(0, map: "DF__UsersCour__watch__3E52440B")
-  Courses   Courses @relation(fields: [course_id], references: [id], onUpdate: NoAction, map: "FK__UsersCour__cours__4AB81AF0")
-  Users     Users   @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "FK__UsersCour__user___49C3F6B7")
+  watched   Int?    @default(0)
+  Users     Users   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "UsersCourses_ibfk_1")
+  Courses   Courses @relation(fields: [course_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "UsersCourses_ibfk_2")
+
+  @@index([course_id], map: "course_id")
+  @@index([user_id], map: "user_id")
 }
 
 model Videos {
-  id            Int       @id(map: "PK__Videos__3213E83FBE2DE3B7") @default(autoincrement())
-  title         String    @db.NVarChar(200)
-  url           String    @db.NVarChar(500)
+  id            Int       @id @default(autoincrement())
+  title         String    @db.VarChar(200)
+  url           String    @db.VarChar(500)
   course_id     Int?
-  created_at    DateTime? @default(now(), map: "DF__Videos__created___4316F928") @db.DateTime
+  created_at    DateTime? @default(now()) @db.DateTime(0)
   display_order Int?
-  updated_at    DateTime? @db.DateTime
-  description   String?
-  Courses       Courses?  @relation(fields: [course_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK__Videos__course_i__3F466844")
+  updated_at    DateTime? @db.DateTime(0)
+  description   String?   @db.VarChar(255)
+  Courses       Courses?  @relation(fields: [course_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Videos_ibfk_1")
+
+  @@index([course_id], map: "course_id")
 }
