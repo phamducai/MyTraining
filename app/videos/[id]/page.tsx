@@ -4,33 +4,32 @@ import HeaderAdmin from "@/component/HeaderAdmin";
 import { SidebarAdmin } from "@/component/SideBarAdmin";
 import { CourseDto } from "@/dto/course.dto";
 import axios from "axios";
-import { Label, TextInput, Textarea, Select } from "flowbite-react";
+import { Button, Label, TextInput, Textarea, Select } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import { LoadingButton } from "@/component/LoadingButton";
+import { useParams, useRouter } from "next/navigation";
 
 type FormValues = {
   title: string;
-  videoFile: FileList;
   course_id: string;
   description: string;
   display_order: number;
 };
 
-const AddVideo: React.FC = () => {
+const EditVideo: React.FC = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<FormValues>();
   const [message, setMessage] = useState<string | null>(null);
   const [courses, setCourses] = useState<CourseDto[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { id } = useParams();
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchCourses() {
       try {
         const res = await axios.get("/api/courses");
         setCourses(res.data);
@@ -38,33 +37,45 @@ const AddVideo: React.FC = () => {
         console.error("Error fetching courses:", error);
       }
     }
-    fetchData();
-  }, []);
 
+    async function fetchVideoDetails() {
+      if (id) {
+        try {
+          const res = await axios.get(`/api/videos/${id}`);
+          const video = res.data;
+          setValue("title", video.title);
+          setValue("course_id", video.course_id);
+          setValue("description", video.description);
+          setValue("display_order", video.display_order);
+        } catch (error) {
+          console.error("Error fetching video details:", error);
+        }
+      }
+    }
+
+    fetchCourses();
+    fetchVideoDetails();
+  }, [id, setValue]);
+  id
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    setIsLoading(true);
-    const formData = new FormData();
-    const videoFile = data.videoFile[0];
-    formData.append("title", data.title);
-    formData.append("course_id", data.course_id);
-    formData.append("description", data.description);
-    formData.append("display_order", data.display_order.toString());
-    formData.append("file", videoFile);
-
     try {
-      await axios.post("/api/videos", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.put(`/api/videos/${id}`, data);
       router.push("/videos");
     } catch (error) {
-      console.error("Error uploading video:", error);
-      setMessage("Error uploading video.");
-    } finally {
-      setIsLoading(false);
+      console.error("Error updating video:", error);
+      setMessage("Error updating video.");
     }
   };
+
+//   const handleDelete = async () => {
+//     try {
+//       await axios.delete(`/api/videos/${id}`);
+//       router.push("/videos");
+//     } catch (error) {
+//       console.error("Error deleting video:", error);
+//       setMessage("Error deleting video.");
+//     }
+//   };
 
   return (
     <div className="">
@@ -73,11 +84,11 @@ const AddVideo: React.FC = () => {
         <div className="flex">
           <SidebarAdmin />
           <div className="w-3/4 mx-auto">
-            <h1 className="text-2xl font-bold mb-4">Thêm Video</h1>
+            <h1 className="text-2xl font-bold mb-4">Chỉnh Sửa Video</h1>
             <form onSubmit={handleSubmit(onSubmit)} className="flex max-w-md flex-col gap-4">
               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="title" value="Thêm Video" />
+                  <Label htmlFor="title" value="Tiêu Đề Video" />
                 </div>
                 <TextInput
                   id="title"
@@ -117,19 +128,6 @@ const AddVideo: React.FC = () => {
               </div>
               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="videoFile" value="Upload Video" />
-                </div>
-                <input
-                  id="videoFile"
-                  type="file"
-                  {...register("videoFile", { required: "Video file is required" })}
-                  accept="video/*"
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                />
-                {errors.videoFile && <p className="text-red-600">{errors.videoFile.message}</p>}
-              </div>
-              <div>
-                <div className="mb-2 block">
                   <Label htmlFor="description" value="Mô tả" />
                 </div>
                 <Textarea
@@ -140,10 +138,8 @@ const AddVideo: React.FC = () => {
                 />
                 {errors.description && <p className="text-red-600">{errors.description.message}</p>}
               </div>
-              <LoadingButton isLoading={isLoading} type="submit">
-                Upload Video
-              </LoadingButton>
-              {message && <p>{message}</p>}
+              <Button type="submit">Cập Nhật Video</Button>
+           
             </form>
           </div>
         </div>
@@ -152,4 +148,4 @@ const AddVideo: React.FC = () => {
   );
 };
 
-export default AddVideo;
+export default EditVideo;

@@ -8,9 +8,12 @@ import HeaderAdmin from "@/component/HeaderAdmin";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { ListVideoDto } from "@/dto/course.dto";
+import { ConfirmModal } from "@/component/ConfirmModal";
 
 export default function Courses() {
   const [videos, setVideos] = useState<ListVideoDto[]>([]);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [videoToDelete, setVideoToDelete] = useState<number | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -21,17 +24,32 @@ export default function Courses() {
         console.log("Videos fetched:", res.data);
         setVideos(res.data);
       } catch (error) {
-        console.error("Error fetching courses:", error);
+        console.error("Error fetching videos:", error);
       }
     }
     fetchData();
   }, []);
 
   const handleEdit = (id: number) => {
-    router.push(`/courses/${id}`);
+    router.push(`/videos/${id}/edit`);
   };
 
-  console.log(videos);
+  const handleDelete =  () => {
+    if (videoToDelete !== null) {
+      try {
+        axios.delete(`/api/videos/${videoToDelete}`);
+        setVideos(videos.filter((video) => video.id !== videoToDelete));
+        setShowConfirmModal(false);
+      } catch (error) {
+        console.error("Error deleting video:", error);
+      }
+    }
+  };
+
+  const confirmDelete = (id: number) => {
+    setVideoToDelete(id);
+    setShowConfirmModal(true);
+  };
 
   return (
     <div className="h-screen overflow-y-hidden">
@@ -43,11 +61,12 @@ export default function Courses() {
             <Table>
               <Table.Head>
                 <Table.HeadCell>Tên Video</Table.HeadCell>
-                <Table.HeadCell>Tổng video</Table.HeadCell>
+                <Table.HeadCell>Mô tả</Table.HeadCell>
                 <Table.HeadCell>Thứ tự hiện thị</Table.HeadCell>
                 <Table.HeadCell>Ngày Cập Nhật</Table.HeadCell>
                 <Table.HeadCell>
-                  <span className="sr-only">Edit</span>
+                  <span className="sr-only">Sửa</span>
+                  <span className="sr-only text-red-500">Xóa</span>
                 </Table.HeadCell>
               </Table.Head>
               <Table.Body className="divide-y">
@@ -59,7 +78,7 @@ export default function Courses() {
                     <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                       {video.title}
                     </Table.Cell>
-                    <Table.Cell>{video.display_order}</Table.Cell>
+                    <Table.Cell>{video.description}</Table.Cell>
                     <Table.Cell>{video.display_order}</Table.Cell>
                     <Table.Cell>
                       {video.updated_at
@@ -69,9 +88,15 @@ export default function Courses() {
                     <Table.Cell>
                       <a
                         onClick={() => handleEdit(video.id)}
-                        className="font-medium text-cyan-600 hover:underline dark:text-cyan-500 cursor-pointer"
+                        className="font-medium text-cyan-600 hover:underline dark:text-cyan-500 cursor-pointer mr-5"
                       >
                         Edit
+                      </a>
+                      <a
+                        onClick={() => confirmDelete(video.id)}
+                        className="font-medium text-red-600 hover:underline dark:text-red-500 cursor-pointer"
+                      >
+                        Delete
                       </a>
                     </Table.Cell>
                   </Table.Row>
@@ -88,6 +113,11 @@ export default function Courses() {
           </div>
         </div>
       </div>
+      <ConfirmModal
+        show={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={handleDelete}
+        message="Bạn có chắc chắn muốn xóa video này không?"      />
     </div>
   );
 }

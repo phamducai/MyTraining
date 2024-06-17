@@ -44,6 +44,8 @@ export async function POST(req: NextRequest) {
         description,
         display_order: parseInt(displayOrder, 10),
         course_id: parseInt(courseId, 10),
+        updated_at: new Date(),
+        created_at: new Date(),
       },
     });
 

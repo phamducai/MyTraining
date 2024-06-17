@@ -6,9 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postbuild": "cp -r public/videos .next/videos"
-  },
+    "lint": "next lint"
+   },
   "dependencies": {
     "@prisma/client": "^5.15.0",
     "@reduxjs/toolkit": "^2.2.5",
