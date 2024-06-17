@@ -7,6 +7,7 @@ import HeaderAdmin from "@/component/HeaderAdmin";
 import { format } from "date-fns";
 import { CourseDto } from "@/dto/course.dto";
 import { useRouter } from "next/navigation";
+import { Header } from "@/component/Header";
 
 export default function Courses() {
   const [courses, setCourses] = useState<CourseDto[]>([]);
@@ -28,8 +29,8 @@ export default function Courses() {
   };
   return (
     <div className="h-screen overflow-y-hidden">
-      <HeaderAdmin />
-      <div className="pt-16">
+      <Header />
+      <div className="pt-20">
         <div className="flex h-screen overflow-y-auto sticky top-16">
           <SidebarAdmin />
           <div className="overflow-x-auto table-w-80 mx-auto">
@@ -66,7 +67,7 @@ export default function Courses() {
                           onClick={() => handleEdit(course.id)}
                           className="font-medium text-cyan-600 hover:underline dark:text-cyan-500 cursor-pointer"
                         >
-                          Edit
+                          Sửa
                         </a>
                       </Table.Cell>
                     </Table.Row>

@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { ListVideoDto } from "@/dto/course.dto";
 import { ConfirmModal } from "@/component/ConfirmModal";
+import { Header } from "@/component/Header";
 
 export default function Courses() {
   const [videos, setVideos] = useState<ListVideoDto[]>([]);
@@ -31,10 +32,10 @@ export default function Courses() {
   }, []);
 
   const handleEdit = (id: number) => {
-    router.push(`/videos/${id}/edit`);
+    router.push(`/videos/${id}`);
   };
 
-  const handleDelete =  () => {
+  const handleDelete =  async() => {
     if (videoToDelete !== null) {
       try {
         axios.delete(`/api/videos/${videoToDelete}`);
@@ -53,8 +54,8 @@ export default function Courses() {
 
   return (
     <div className="h-screen overflow-y-hidden">
-      <HeaderAdmin />
-      <div className="pt-16">
+      <Header />
+      <div className="pt-20">
         <div className="flex h-screen overflow-y-auto sticky top-16">
           <SidebarAdmin />
           <div className="overflow-x-auto table-w-80 mx-auto">
@@ -90,13 +91,13 @@ export default function Courses() {
                         onClick={() => handleEdit(video.id)}
                         className="font-medium text-cyan-600 hover:underline dark:text-cyan-500 cursor-pointer mr-5"
                       >
-                        Edit
+                        Sửa
                       </a>
                       <a
                         onClick={() => confirmDelete(video.id)}
                         className="font-medium text-red-600 hover:underline dark:text-red-500 cursor-pointer"
                       >
-                        Delete
+                        Xóa
                       </a>
                     </Table.Cell>
                   </Table.Row>

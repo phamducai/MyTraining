@@ -1,6 +1,5 @@
 "use client";
 
-import HeaderAdmin from "@/component/HeaderAdmin";
 import { SidebarAdmin } from "@/component/SideBarAdmin";
 import { CourseDto } from "@/dto/course.dto";
 import axios from "axios";
@@ -9,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { LoadingButton } from "@/component/LoadingButton";
+import { Header } from "@/component/Header";
 
 type FormValues = {
   title: string;
@@ -68,8 +68,8 @@ const AddVideo: React.FC = () => {
 
   return (
     <div className="">
-      <HeaderAdmin />
-      <div className="mt-16 mb-20">
+      <Header/>
+      <div className="mt-20 mb-20">
         <div className="flex">
           <SidebarAdmin />
           <div className="w-3/4 mx-auto">

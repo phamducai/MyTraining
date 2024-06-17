@@ -4,8 +4,8 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Button, Label, Textarea, TextInput } from "flowbite-react";
-import HeaderAdmin from "@/component/HeaderAdmin";
 import { SidebarAdmin } from "@/component/SideBarAdmin";
+import { Header } from "@/component/Header";
 
 type FormValues = {
   title: string;
@@ -52,8 +52,8 @@ const NewCourse: React.FC = () => {
 
   return (
     <div className="">
-      <HeaderAdmin />
-      <div className="mt-16 mb-20">
+    <Header />
+    <div className="mt-20 mb-20">
         <div className="flex">
           <SidebarAdmin />
           <div className="w-3/4 mx-auto">
