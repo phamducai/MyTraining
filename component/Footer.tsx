@@ -1,7 +1,7 @@
 import { Footer } from "flowbite-react";
 import { BsFacebook, BsTiktok, BsYoutube } from "react-icons/bs";
 
-export function Component() {
+export function FooterComponents() {
   const currentYear = new Date().getFullYear();
   return (
     <Footer container className="fixed bottom-0 w-full z-50">
