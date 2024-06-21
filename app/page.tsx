@@ -1,15 +1,11 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { CourseDto } from "@/dto/course.dto";
 
-import { CarouselComponent } from "@/component/CarouselComponent";
-import { Header } from "@/component/Header";
-import { CardComponent } from "@/component/CardComponent";
 import { FooterComponents } from "@/component/Footer";
-import videojs from 'video.js';
-import 'video.js/dist/video-js.css';
-import VideoWithTextLogo from "@/component/VideoWithTextLogo";
+import VideoWithFullscreenWatermark from "@/component/VideoWithTextLogo";
 export default function Home() {
   const [courses, setCourses] = useState<CourseDto[]>([]);
 
@@ -26,11 +22,10 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="">
-    <Header />
-    <VideoWithTextLogo src="/videos/video2.mp4" logoText="Your Logo Text" />
-
-    <FooterComponents />
-  </div>
+    <div>
+      {/* <Header /> */}
+      <VideoWithFullscreenWatermark src="/videos/video2.mp4" logoText="Your Logo Text" />
+      <FooterComponents />
+    </div>
   );
 }
